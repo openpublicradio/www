@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang='en-US'>
+<head>
+  <meta charset='utf-8' />
+  <title>Open Public Radio API</title>
+  <style type='text/css'>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --color-background-primary: #354758;
+      --color-background-secondary: #2C3646;
+      --color-foreground-primary: #F2F3F3;
+      --color-foreground-secondary: #AAA;
+      --color-accent-primary: #547AA5;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: var(--color-background-secondary);
+      color: var(--color-foreground-primary);
+      font-family: system-ui;
+      padding-top: 4rem;
+    }
+
+    h1 {
+      border-bottom: 2px solid var(--color-accent-primary);
+      color: var(--color-foreground-secondary);
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding-bottom: 0.75rem;
+      margin: 0;
+      display: inline;
+    }
+
+    .actions {
+      display: flex;
+    }
+
+    .button {
+      border-radius: 2px;
+      border: 1px solid transparent;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: unset;
+      white-space: nowrap;
+      padding: 0.75rem;
+      display: block;
+      flex: 1;
+    }
+
+    .button + .button {
+      margin-left: 1rem;
+    }
+
+    .button-primary {
+      background-color: var(--color-accent-primary);
+      color: var(--color-foreground-primary);
+    }
+
+    .button-postman {
+      border-color: coral;
+      color: coral;
+    }
+
+    .page {
+      padding: 4rem;
+      max-width: 85rem;
+      margin: 0 auto;
+      display: flex;
+    }
+
+    .page-header {
+      margin-right: 4rem;
+    }
+
+    .page-spiel {
+      font-size: 1.5rem;
+      margin: 3rem 0;
+    }
+
+    .terminal {
+      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+      width: 60rem;
+      height: 30rem;
+      position: relative;
+    }
+
+    .terminal-header {
+      border-radius: 8px 8px 0 0;
+      background-color: #E0E8F0;
+      height: 2rem;
+      line-height: 2rem;
+      letter-spacing: 0.25rem;
+      padding-left: 0.75rem;
+    }
+
+    .terminal-button {
+      border-radius: 8px;
+      width: 0.75rem;
+      height: 0.75rem;
+      display: inline-block;
+    }
+
+    .terminal-button-maximize {
+      background: #3BB662;
+    }
+
+    .terminal-button-restore {
+      background: #E5C30F;
+    }
+
+    .terminal-button-close {
+      background: #E75448;
+    }
+
+    .terminal-buffer {
+      background-color: #30353A;
+      color: white;
+      font-family: Monaco, 'Consolas', monospace;
+      font-size: small;
+      text-overflow: ellipsis;
+      white-space: pre;
+      padding: 0.75rem;
+      position: absolute;
+      width: 100%;
+      top: 2rem;
+      bottom: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .terminal-cursor {
+      opacity: 1;
+      animation: blink 0.7s infinite;
+    }
+
+    .terminal-line {
+      position: relative;
+    }
+
+    .terminal-line::before {
+      content: '$ ';
+    }
+
+    .terminal-line::after {
+      content: ' ';
+      animation: typing 4s steps(70, start);
+      animation-fill-mode: forwards;
+      background-color: #30353A;
+      position: absolute;
+      left: 2ch;
+      right: 0;
+    }
+
+    .command-2,
+    .command-3 {
+      height: 0;
+      overflow: hidden;
+    }
+
+    .command-2 {
+      animation: appear 0s linear 4.5s;
+      animation-fill-mode: forwards;
+      
+    }
+
+    .command-3 {
+      animation: appear 0s linear 5s;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes typing {
+      from {
+        left: 2ch;
+      }
+
+      to {
+        left: 72ch;
+      }
+    }
+
+    @keyframes appear {
+      from {
+        height: 0;
+      }
+
+      to {
+        height: auto;
+      }
+    }
+
+    @keyframes blink {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+  <link rel='stylesheet' href='https://cdn.rawgit.com/konpa/devicon/df6431e323547add1b4cf45992913f15286456d3/devicon.min.css' />
+</head>
+<body>
+  <main class='page'>
+    <header class='page-header'>
+      <h1>The Open Public Radio API</h1>
+      <p class='page-spiel'>A freely available REST API for querying and geo-locating NPR member stations across the country.</p>
+
+      <div class='actions'>
+        <a class='button-primary button' href='#'>View Documentation</a>
+        <a class='button-postman button'>Run in Postman</a>
+      </div>
+    </header>
+
+    <section class='terminal'>
+      <header class='terminal-header'>
+        <span class='terminal-button-maximize terminal-button'></span>
+        <span class='terminal-button-restore terminal-button'></span>
+        <span class='terminal-button-close terminal-button'></span>
+      </header>
+
+      <code class='terminal-buffer command-1'><div class='terminal-line'>curl -s api.openpublicradio.org/stations/WHYY-FM | python -m json.tool</div>
+<div class='terminal-line command-2'>{
+      "abbreviation": "WHYY-FM",
+      "address": [
+          "Independence Mall West",
+          "150 North Sixth Street",
+          "Philadelphia",
+          "PA",
+          "19106"
+      ],
+      "band": "FM",
+      "call": "WHYY",
+      "fax": 2153510398,
+      "format": "public_radio",
+      "frequency": 90.9,
+      "logo": "https://media.npr.org/images/stations/logos/whyy.gif",
+      "market_city": "Philadelphia",
+      "market_state": "PA",
+      "name": "WHYY",
+      "phone": 2153519200,
+      "phone_extension": null,
+      "tagline": "Public Media serving Southeastern Pennsylvania, Delaware, South Jersey and the world",
+      "title": "WHYY-FM",
+      "urls": {
+          "brand": [
+              {
+                  "href": "http://www.whyy.org",
+                  "rel": "home_page",
+                  "title": "WHYY-FM Homepage"
+              },
+              {
+                  "href": "http://www.whyy.org/91FM/live.php",
+                  "rel": "listen_page",
+                  "title": "WHYY-FM Listen Live"
+              },
+              {
+                  "href": "http://www.whyy.org/91FM/live.php",
+                  "rel": "listen_page",
+                  "title": "WHYY - Second Audio Program"
+              },
+              {
+                  "href": "http://www.whyy.org/podcast/whyy_newscast.mp3",
+                  "rel": "newscast",
+                  "title": null
+              },
+              {
+                  "href": "http://www.facebook.com/whyypublicmedia",
+                  "rel": "facebook_page",
+                  "title": "Facebook"
+              },
+              {
+                  "href": "http://www.twitter.com/whyy",
+                  "rel": "twitter_feed",
+                  "title": "Twitter"
+              },
+              {
+                  "href": "https://media.npr.org/stationid/433.mp3",
+                  "rel": "station_id",
+                  "title": "Identifier Audio"
+              }
+          ],
+          "donate": [
+              {
+                  "href": "https://www.whyy.org/support/join.php",
+                  "rel": "pledge_page",
+                  "title": "Support WHYY"
+              }
+          ],
+          "podcasts": [
+              {
+                  "href": "http://whyy.org/cms/voicesinthefamily/feed/",
+                  "rel": "podcast",
+                  "title": "Voices in the Family"
+              },
+              {
+                  "href": "http://www.newsworks.org/index.php/blogs/the-remix",
+                  "rel": "podcast",
+                  "title": "The Remix with Dr. James Peterson"
+              },
+              {
+                  "href": "http://feeds.feedburner.com/grapplepodcast",
+                  "rel": "podcast",
+                  "title": "Grapple"
+              },
+              {
+                  "href": "http://feeds.feedburner.com/NewsWorksTonight",
+                  "rel": "podcast",
+                  "title": "NewsWorks Tonight"
+              },
+              {
+                  "href": "http://whyy.org/cms/radiotimes/feed/podcast/",
+                  "rel": "podcast",
+                  "title": "Radio Times with Marty Moss-Coane"
+              },
+              {
+                  "href": "http://feeds.feedburner.com/TheRadioAdventuresOfEleanorAmplified",
+                  "rel": "podcast",
+                  "title": "The Radio Adventures of Eleanor Amplified"
+              },
+              {
+                  "href": "http://feeds.feedburner.com/newsworks/thepulse",
+                  "rel": "podcast",
+                  "title": "The Pulse"
+              },
+              {
+                  "href": "http://whyy.org/cms/skytalk/feed/",
+                  "rel": "podcast",
+                  "title": "Skytalk"
+              },
+              {
+                  "href": "http://whyy.org/cms/youbetyourgarden/feed/",
+                  "rel": "podcast",
+                  "title": "You Bet Your Garden"
+              },
+              {
+                  "href": "https://feeds.feedburner.com/newsworks/wawt?format=xml",
+                  "rel": "podcast",
+                  "title": "What Are We Thinking?"
+              }
+          ],
+          "programming": [
+              {
+                  "href": "http://www.whyy.org/91FM/schedule.php",
+                  "rel": "program_schedule",
+                  "title": "Program Schedule"
+              }
+          ],
+          "streams": [
+              {
+                  "href": "http://whyy.streamguys1.com/whyy-mp3",
+                  "rel": "primary_format_stream",
+                  "title": "WHYY-FM: News and Talk for the Greater Philadelphia region"
+              },
+              {
+                  "href": "http://whyy-hd.streamguys1.com/whyy-hd-mp3",
+                  "rel": "secondary_format_stream",
+                  "title": "WHYY Plus"
+              }
+          ]
+      },
+      "coordinates": [
+          39.95406670000001,
+          -75.1502758
+      ]
+    }</div>
+    <div class='terminal-line command-3'><span class='terminal-cursor'>_</span></div>
+      </code>
+    </section>
+  </main>
+</body>
+</html>
